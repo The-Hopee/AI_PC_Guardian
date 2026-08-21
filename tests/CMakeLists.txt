@@ -10,3 +10,11 @@ add_executable(
 target_link_libraries(guardian-model-tests PRIVATE Guardian::Common)
 
 add_test(NAME guardian.telemetry-model COMMAND guardian-model-tests)
+
+add_executable(
+    guardian-proto-tests
+    proto/telemetry_conversion_test.cpp
+)
+target_link_libraries(guardian-proto-tests PRIVATE Guardian::Proto)
+
+add_test(NAME guardian.telemetry-conversion COMMAND guardian-proto-tests)

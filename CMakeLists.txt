@@ -42,6 +42,7 @@ else()
 endif()
 
 add_subdirectory(common)
+add_subdirectory(proto)
 
 if(WIN32)
     add_subdirectory(agent)
