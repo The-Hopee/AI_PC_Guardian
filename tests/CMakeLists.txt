@@ -18,3 +18,17 @@ add_executable(
 target_link_libraries(guardian-proto-tests PRIVATE Guardian::Proto)
 
 add_test(NAME guardian.telemetry-conversion COMMAND guardian-proto-tests)
+
+add_executable(
+    guardian-server-service-tests
+    server/telemetry_service_test.cpp
+)
+target_link_libraries(
+    guardian-server-service-tests
+    PRIVATE Guardian::ServerService
+)
+
+add_test(
+    NAME guardian.telemetry-service
+    COMMAND guardian-server-service-tests
+)

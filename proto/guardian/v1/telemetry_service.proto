@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package guardian.v1;
+
+import "guardian/v1/telemetry.proto";
+
+message SubmitTelemetryResponse {
+  string event_id = 1;
+}
+
+service TelemetryService {
+  rpc SubmitTelemetry(TelemetryEvent) returns (SubmitTelemetryResponse);
+}

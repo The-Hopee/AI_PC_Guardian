@@ -43,11 +43,10 @@ endif()
 
 add_subdirectory(common)
 add_subdirectory(proto)
+add_subdirectory(server)
 
 if(WIN32)
     add_subdirectory(agent)
-else()
-    add_subdirectory(server)
 endif()
 
 if(BUILD_TESTING)
