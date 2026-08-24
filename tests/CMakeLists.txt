@@ -32,3 +32,29 @@ add_test(
     NAME guardian.telemetry-service
     COMMAND guardian-server-service-tests
 )
+
+add_executable(
+    guardian-server-integration-tests
+    server/telemetry_service_integration_test.cpp
+)
+target_link_libraries(
+    guardian-server-integration-tests
+    PRIVATE Guardian::ServerService
+)
+
+add_test(
+    NAME guardian.telemetry-service-network
+    COMMAND guardian-server-integration-tests
+)
+
+add_test(NAME guardian-server.version COMMAND guardian-server --version)
+set_tests_properties(
+    guardian-server.version
+    PROPERTIES PASS_REGULAR_EXPRESSION "AI PC Guardian Server v0\\.1"
+)
+
+add_test(NAME guardian-server.help COMMAND guardian-server --help)
+set_tests_properties(
+    guardian-server.help
+    PROPERTIES PASS_REGULAR_EXPRESSION "Usage:.*guardian-server"
+)

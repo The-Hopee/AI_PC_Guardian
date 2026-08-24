@@ -11,7 +11,8 @@ Protobuf-контракт для их сериализации и gRPC-конт�
 | `ARCH-001` | Реализована | CMake-фундамент, платформенные targets и CTest |
 | `COMMON-001` | Реализована | Общая модель телеметрии CPU/RAM |
 | `PROTO-001` | Реализована | Protobuf-схема, C++-конвертация и тесты сериализации |
-| `SERVER-001` | В работе | gRPC-контракт и протестированный обработчик телеметрии |
+| `SERVER-001` | Реализована | Запускаемый gRPC-сервер, обработчик и loopback-тест полного RPC-пути |
+| `WIN-001` | Запланирована | Windows gRPC-клиент для отправки тестового события |
 
 Подробные ТЗ и критерии приёмки находятся в
 [docs/tasks](docs/tasks/README.md).
@@ -62,8 +63,8 @@ TelemetryEvent  →  guardian.v1.TelemetryEvent  →  gRPC-приём телем
 
 `Guardian::Common` описывает данные, с которыми удобно и безопасно работает
 бизнес-логика C++. `Guardian::Proto` переводит их в формат, который можно
-превратить в байты, записать в файл или передать по сети. Следующий этап добавит
-gRPC-сервер, который примет такие байты по сети и восстановит из них событие.
+превратить в байты, записать в файл или передать по сети. `guardian-server`
+слушает loopback-интерфейс и принимает такие события через gRPC.
 
 Краткое введение в используемые конструкции находится в
 [руководстве по Protobuf](docs/guides/protobuf-basics.md).
@@ -77,13 +78,26 @@ cmake -S . -B build -G "Visual Studio 17 2022" -A x64
 cmake --build build --config Debug
 ctest --test-dir build -C Debug --output-on-failure
 ./build/agent/Debug/guardian-agent.exe
+./build/server/Debug/guardian-server.exe
 ```
 
 Ожидаемый вывод:
 
 ```text
 AI PC Guardian Agent v0.1
+Server listening on 127.0.0.1:50051
 ```
+
+Параметры запуска сервера:
+
+```powershell
+./build/server/Debug/guardian-server.exe --help
+./build/server/Debug/guardian-server.exe --version
+./build/server/Debug/guardian-server.exe --address 127.0.0.1:50052
+```
+
+По умолчанию сервер доступен только с этого компьютера. Он работает до `Ctrl+C`,
+после чего штатно завершает gRPC и освобождает порт.
 
 ## Сборка на Ubuntu
 
@@ -94,13 +108,15 @@ ctest --test-dir build --output-on-failure
 ./build/server/guardian-server
 ```
 
-Ожидаемый вывод:
+Ожидаемый вывод после запуска сервера:
 
 ```text
-AI PC Guardian Server v0.1
+Server listening on 127.0.0.1:50051
 ```
 
-Для сборки без тестовых targets используйте `-DBUILD_TESTING=OFF`.
+Сервер работает до остановки процесса (`Ctrl+C`). Для сборки без тестовых
+targets используйте `-DBUILD_TESTING=OFF`. Реализация и все восемь тестов
+проверены на Windows/MSVC; контрольная сборка на Ubuntu/GCC ещё не выполнена.
 
 ## Структура репозитория
 
