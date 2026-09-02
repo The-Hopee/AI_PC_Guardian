@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package guardian.v1;
+
+import "guardian/v1/telemetry.proto";
+
+enum AgentState {
+  AGENT_STATE_UNSPECIFIED = 0;
+  AGENT_STATE_STARTING = 1;
+  AGENT_STATE_RUNNING = 2;
+  AGENT_STATE_DEGRADED = 3;
+}
+
+message LocalSnapshotRequest {
+  uint32 protocol_version = 1;
+}
+
+message MetricSnapshot {
+  int64 collected_at_unix_ms = 1;
+  CpuMetric cpu = 10;
+  MemoryMetric memory = 11;
+}
+
+message LocalSnapshotResponse {
+  uint32 protocol_version = 1;
+  AgentState agent_state = 2;
+  MetricSnapshot snapshot = 3;
+  string status_message = 4;
+}

@@ -15,7 +15,13 @@ target_link_libraries(
     PUBLIC
         Guardian::Proto
         Guardian::Rpc
+    PRIVATE Guardian::Tools
 )
 
 add_executable(guardian-server src/main.cpp)
-target_link_libraries(guardian-server PRIVATE Guardian::ServerService)
+target_link_libraries(
+    guardian-server
+    PRIVATE
+        Guardian::ServerService
+        Guardian::Tools
+)

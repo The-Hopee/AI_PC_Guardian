@@ -1,7 +1,6 @@
 #include <guardian/proto/telemetry_conversion.hpp>
 #include <guardian/server/telemetry_service.hpp>
-
-#include <iostream>
+#include <guardian/tools/logger.hpp>
 
 namespace guardian::server {
 
@@ -25,7 +24,12 @@ namespace guardian::server {
     }
 
     response->set_event_id(event->id.value);
-    std::clog << "Accepted telemetry event " << event->id.value << '\n';
+    GUARDIAN_LOG_INFO(
+        "server.telemetry",
+        "Accepted telemetry event; event_id=",
+        event->id.value,
+        ", device_id=",
+        event->device_id.value);
     return ::grpc::Status::OK;
 }
 

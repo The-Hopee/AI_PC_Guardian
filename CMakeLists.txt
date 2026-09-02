@@ -26,6 +26,12 @@ endif()
 
 include(CTest)
 
+option(
+    GUARDIAN_BUILD_DESKTOP
+    "Build the Qt 6/QML desktop application when Qt is available"
+    ON
+)
+
 configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.hpp.in"
     "${CMAKE_CURRENT_BINARY_DIR}/generated/guardian/version.hpp"
@@ -41,12 +47,32 @@ else()
     target_compile_options(guardian_project_options INTERFACE -Wall -Wextra -Wpedantic)
 endif()
 
+add_subdirectory(tools)
 add_subdirectory(common)
 add_subdirectory(proto)
+add_subdirectory(ipc)
 add_subdirectory(server)
 
 if(WIN32)
     add_subdirectory(agent)
+
+    if(GUARDIAN_BUILD_DESKTOP)
+        find_package(
+            Qt6 6.5
+            QUIET
+            COMPONENTS Network Quick QuickControls2
+        )
+
+        if(Qt6_FOUND)
+            qt_standard_project_setup(REQUIRES 6.5)
+            add_subdirectory(desktop)
+        else()
+            message(
+                STATUS
+                "Qt 6.5+ was not found; guardian-desktop will not be built"
+            )
+        endif()
+    endif()
 endif()
 
 if(BUILD_TESTING)
